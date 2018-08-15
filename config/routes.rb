@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount RailsEmailPreview::Engine, at: 'emails'
   devise_for :users,
            skip: %i[sessions],
            controllers: {

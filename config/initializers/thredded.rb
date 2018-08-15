@@ -71,7 +71,7 @@ Thredded.private_messaging_enabled = true
 # Thredded.posts_per_page = 25
 
 # The layout for rendering Thredded views.
-Thredded.layout = 'thredded/application'
+Thredded.layout = 'application'
 
 # ==> Email Configuration
 # Email "From:" field will use the following
@@ -173,3 +173,18 @@ Thredded.layout = 'thredded/application'
 #
 # add in (must install separate gem (under development) as well):
 # Thredded.notifiers = [Thredded::EmailNotifier.new, Thredded::PushoverNotifier.new(ENV['PUSHOVER_APP_ID'])]
+# frozen_string_literal: true
+
+Rails.application.config.to_prepare do
+  Thredded::ApplicationController.module_eval do
+    rescue_from Thredded::Errors::LoginRequired do |exception|
+      flash.now[:notice] = exception.message
+      controller = Users::SessionsController.new
+      controller.request = request
+      controller.request.env['devise.mapping'] = Devise.mappings[:user]
+      controller.response = response
+      controller.response_options = { status: :forbidden }
+      controller.process(:new)
+    end
+  end
+end

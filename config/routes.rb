@@ -14,4 +14,5 @@ devise_scope :user do
                     via: Devise.mappings[:user].sign_out_via
 end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  mount Thredded::Engine => '/forum'
 end
